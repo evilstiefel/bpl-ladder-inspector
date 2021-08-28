@@ -3,7 +3,7 @@ import { combineLatest, interval, Observable } from 'rxjs';
 import { LadderEntry } from 'src/app/shared/shared/models/ladder-entry';
 import { BPLLadderService } from 'src/app/shared/shared/services/bplladder.service';
 
-import { debounceTime, distinctUntilChanged, first, map, publishReplay, refCount, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, publishReplay, refCount, startWith, switchMap, tap } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { RankInfo } from '../../models/rank-info';
 
@@ -20,9 +20,13 @@ export class LadderOverviewComponent {
 
   accountName$: Observable<string>;
 
+  accountNames$: Observable<string[]>;
+
   rankInfo$: Observable<RankInfo>;
 
-  accountControl = new FormControl();
+  teamName$: Observable<string | undefined>;
+
+  accountControl = new FormControl({ value: undefined, disabled: true });
 
   constructor(
     private ladderService: BPLLadderService
@@ -36,7 +40,13 @@ export class LadderOverviewComponent {
     );
 
     this.playerCount$ = this.ladder$.pipe(
-      map((list) => list.length || 0)
+      startWith([]),
+      map((list) => list.length || 0),
+      tap((count) => {
+        if (count > 0) {
+          this.accountControl.enable({ emitEvent: false });
+        }
+      })
     );
 
     this.accountName$ = this.accountControl.valueChanges.pipe(
@@ -49,6 +59,20 @@ export class LadderOverviewComponent {
       this.accountName$
     ]).pipe(
       map(([ladder, accountName]) => this.calculateRanks(accountName, ladder))
+    );
+
+    this.accountNames$ = this.ladder$.pipe(
+      map(ladder => {
+        return ladder.reduce((acc, cur) => acc.concat(cur.account_name), [] as string[])
+      })
+    );
+
+    this.teamName$ = combineLatest([
+      this.ladder$,
+      this.accountName$
+    ]).pipe(
+      map(([ladder, accountName]) => ladder.find(entry => entry.account_name.toLocaleLowerCase() === accountName.toLocaleLowerCase())),
+      map((listEntry) => listEntry?.team_name)
     );
   }
 

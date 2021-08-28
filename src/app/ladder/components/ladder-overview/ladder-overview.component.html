@@ -1,14 +1,43 @@
 <form class="row g-2 my-3">
     <div class="col-auto">
-        <input [formControl]="accountControl" id="accountName" type="text" class="form-control" placeholder="Accountname">
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Search</button>
+        <input autocomplete="off" [typeahead]="(accountNames$ | async) || []" [formControl]="accountControl" id="accountName" type="text" class="form-control" placeholder="Accountname">
     </div>
     <div class="col d-flex justify-content-end">
         <span>Currently {{ (playerCount$ | async) || 0 }} players in league...</span>
     </div>
 </form>
-<div class="mb-3" *ngIf="rankInfo$ | async; let rankInfo">
-    <pre>{{ rankInfo | json }}</pre>
+<div class="card" *ngIf="rankInfo$ | async; let rankInfo">
+    <div class="card-header d-flex justify-content-between">
+        <span>
+            {{ accountControl.value }}
+        </span>
+        <span>
+            {{ teamName$ | async }}
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-text">Rank overall</span>
+                    <input class="form-control" readonly type="text" [value]="rankInfo.ladderRank">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-text">Rank in class</span>
+                    <input class="form-control" readonly type="text" [value]="rankInfo.classRank">
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="input-group">
+                    <span class="input-group-text">Rank in team</span>
+                    <input class="form-control" readonly type="text" [value]="rankInfo.teamRank">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-3">
+    <small>The ladder is refreshed every minute, but might be slightly behind ingame data.</small>
 </div>
