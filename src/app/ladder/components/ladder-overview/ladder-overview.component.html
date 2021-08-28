@@ -6,7 +6,7 @@
         <span>Currently {{ (playerCount$ | async) || 0 }} players in league...</span>
     </div>
 </form>
-<div class="card" *ngIf="rankInfo$ | async; let rankInfo">
+<div class="card" *ngIf="accountName$ | async; let accountName">
     <div class="card-header d-flex justify-content-between">
         <span>
             {{ accountControl.value }}
@@ -20,19 +20,19 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="input-group">
                     <span class="input-group-text">Rank overall</span>
-                    <input class="form-control" readonly type="text" [value]="rankInfo.ladderRank">
+                    <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.ladderRank">
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="input-group">
                     <span class="input-group-text">Rank in class</span>
-                    <input class="form-control" readonly type="text" [value]="rankInfo.classRank">
+                    <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.classRank">
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="input-group">
                     <span class="input-group-text">Rank in team</span>
-                    <input class="form-control" readonly type="text" [value]="rankInfo.teamRank">
+                    <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.teamRank">
                 </div>
             </div>
         </div>
