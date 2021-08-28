@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { combineLatest, interval, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, interval, Observable } from 'rxjs';
 import { LadderEntry, TeamNames } from 'src/app/shared/shared/models/ladder-entry';
 import { BPLLadderService } from 'src/app/shared/shared/services/bplladder.service';
 
@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged, map, publishReplay, refCount, start
 import { FormControl } from '@angular/forms';
 import { RankInfo } from '../../models/rank-info';
 import { stringify } from '@angular/compiler/src/util';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 @Component({
   selector: 'app-ladder-overview',
@@ -19,7 +20,7 @@ export class LadderOverviewComponent {
 
   playerCount$: Observable<number>;
 
-  accountName$: Observable<string>;
+  accountName$ = new BehaviorSubject<string>('');
   
   className$: Observable<string | undefined>;
 
@@ -55,11 +56,6 @@ export class LadderOverviewComponent {
           this.accountControl.enable({ emitEvent: false });
         }
       })
-    );
-
-    this.accountName$ = this.accountControl.valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged()
     );
 
     this.topCharacter$ = combineLatest([
@@ -140,6 +136,10 @@ export class LadderOverviewComponent {
       teamRank,
       classRank,
     })
+  }
+
+  public typeaheadSelected(event: TypeaheadMatch): void {
+    this.accountName$.next(event.item);
   }
 
 }

@@ -1,6 +1,6 @@
 <form class="row g-2 my-3">
     <div class="col-auto">
-        <input autocomplete="off" [typeahead]="(accountNames$ | async) || []" [formControl]="accountControl"
+        <input autocomplete="off" (typeaheadOnSelect)="typeaheadSelected($event)" [typeahead]="(accountNames$ | async) || []" [formControl]="accountControl"
             id="accountName" type="text" class="form-control" placeholder="Accountname">
     </div>
     <div class="col d-flex justify-content-end">
@@ -12,7 +12,7 @@
         <div class="card" *ngIf="accountName$ | async; let accountName">
             <div class="card-header d-flex justify-content-between">
                 <span>
-                    {{ accountControl.value }}
+                    {{ accountName$ | async }}
                 </span>
                 <span>
                     <ng-container *ngIf="className$ | async; let className">
@@ -52,13 +52,18 @@
                 <div class="row">
                     <div class="col">
                         <div class="pie">
-                            <div class="pie__segment" [style]="'--offset: 0; --value: ' + statistics.get('Mercs') + '; --bg: #85150f; --over50: ' + (statistics.get('Mercs') > 50 ? '1'  : '0') + ';'"></div>
-                            <div class="pie__segment" [style]="'--offset: ' + statistics.get('Mercs') + '; --value: ' + statistics.get('Druids') + '; --bg: #5e3d73; --over50: ' + (statistics.get('Druids') > 50 ? '1'  : '0') + ';'"></div>
-                            <div class="pie__segment" [style]="'--offset: ' + (+statistics.get('Mercs') + +statistics.get('Druids')) + '; --value: '+ statistics.get('Knights') +'; --bg: #9e601c; --over50: ' + (statistics.get('Knights') > 50 ? '1'  : '0') + ';'"></div>
+                            <div class="pie__segment" data-label="&nbsp;Mercs" [style]="'--offset: 0; --value: ' + statistics.get('Mercs') + '; --bg: #85150f; --over50: ' + (statistics.get('Mercs') > 50 ? '1'  : '0') + ';'"></div>
+                            <div class="pie__segment" data-label="&nbsp;Druids" [style]="'--offset: ' + statistics.get('Mercs') + '; --value: ' + statistics.get('Druids') + '; --bg: #5e3d73; --over50: ' + (statistics.get('Druids') > 50 ? '1'  : '0') + ';'"></div>
+                            <div class="pie__segment" data-label="&nbsp;Knights" [style]="'--offset: ' + (+statistics.get('Mercs') + +statistics.get('Druids')) + '; --value: '+ statistics.get('Knights') +'; --bg: #9e601c; --over50: ' + (statistics.get('Knights') > 50 ? '1'  : '0') + ';'"></div>
                         </div>
                     </div>
-                    <div class="col d-flex align-items-center">
+                    <div class="col d-flex justify-content-center flex-column">
                         <p>Distribution of top 100 players in ladder among teams.</p>
+                        <p>
+                            Druids: {{ statistics.get('Druids')}}%<br/>
+                            Mercs: {{ statistics.get('Mercs')}}%<br/>
+                            Knights: {{ statistics.get('Knights')}}%<br/>
+                        </p>
                     </div>
                 </div>
             </div>
