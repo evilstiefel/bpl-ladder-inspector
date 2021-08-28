@@ -62,8 +62,10 @@ export class LadderOverviewComponent {
       this.ladder$,
       this.accountName$
     ]).pipe(
-      map(([ladder, accountName]) => ladder.filter(elem => elem['account_name'].toLocaleLowerCase() === accountName.toLocaleLowerCase()).sort((a, b) => a['rank'] < b['rank'] ? -1 : 1).pop())
-    )
+      map(([ladder, accountName]) => ladder.filter(elem => elem['account_name'].toLocaleLowerCase() === accountName.toLocaleLowerCase()).sort((a, b) => a['rank'] < b['rank'] ? -1 : 1).pop()),
+      publishReplay(1),
+      refCount()
+    );
 
     this.rankInfo$ = combineLatest([
       this.ladder$,
