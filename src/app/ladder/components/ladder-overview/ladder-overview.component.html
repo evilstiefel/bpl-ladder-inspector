@@ -9,7 +9,7 @@
 </form>
 <div class="row g-3">
     <div class="col-12 col-lg-6 ">
-        <div class="card" *ngIf="accountName$ | async; let accountName">
+        <div class="card" *ngIf="accountName$ | async; let accountName; else hint">
             <div class="card-header d-flex justify-content-between">
                 <span>
                     {{ accountName$ | async }}
@@ -75,3 +75,12 @@
         <small>The ladder is refreshed every minute, but might be slightly behind ingame data.</small>
     </div>
 </div>
+
+<ng-template #hint>
+    <div class="card">
+        <div class="card-header">Nothing to see here</div>
+        <div class="card-body">
+            <p>Select an account to see relevant information.</p>
+        </div>
+    </div>
+</ng-template>

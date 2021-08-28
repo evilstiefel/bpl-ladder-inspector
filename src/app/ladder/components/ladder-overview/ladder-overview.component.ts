@@ -90,7 +90,6 @@ export class LadderOverviewComponent {
 
     this.statistics$ = this.ladder$.pipe(
       map((ladder) => ladder.slice(0, 100)),
-      tap((top100) => console.log({ top100 })),
       map((top100) => {
         const statsMap = top100.reduce((acc, current) => {
           if (acc.get(current.team_name)) {
