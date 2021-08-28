@@ -12,6 +12,9 @@
             {{ accountControl.value }}
         </span>
         <span>
+            <ng-container *ngIf="className$ | async; let className">
+                {{ className}}&nbsp;-&nbsp;
+            </ng-container>
             {{ teamName$ | async }}
         </span>
     </div>

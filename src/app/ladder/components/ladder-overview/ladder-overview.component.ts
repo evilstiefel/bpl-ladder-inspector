@@ -19,6 +19,10 @@ export class LadderOverviewComponent {
   playerCount$: Observable<number>;
 
   accountName$: Observable<string>;
+  
+  className$: Observable<string | undefined>;
+
+  topCharacter$: Observable<LadderEntry | undefined>;
 
   accountNames$: Observable<string[]>;
 
@@ -54,6 +58,13 @@ export class LadderOverviewComponent {
       distinctUntilChanged()
     );
 
+    this.topCharacter$ = combineLatest([
+      this.ladder$,
+      this.accountName$
+    ]).pipe(
+      map(([ladder, accountName]) => ladder.filter(elem => elem['account_name'].toLocaleLowerCase() === accountName.toLocaleLowerCase()).sort((a, b) => a['rank'] < b['rank'] ? -1 : 1).pop())
+    )
+
     this.rankInfo$ = combineLatest([
       this.ladder$,
       this.accountName$
@@ -67,12 +78,12 @@ export class LadderOverviewComponent {
       })
     );
 
-    this.teamName$ = combineLatest([
-      this.ladder$,
-      this.accountName$
-    ]).pipe(
-      map(([ladder, accountName]) => ladder.find(entry => entry.account_name.toLocaleLowerCase() === accountName.toLocaleLowerCase())),
-      map((listEntry) => listEntry?.team_name)
+    this.teamName$ = this.topCharacter$.pipe(
+      map((character) => character?.team_name)
+    );
+
+    this.className$ = this.topCharacter$.pipe(
+      map((character) => character?.character_class)
     );
   }
 
