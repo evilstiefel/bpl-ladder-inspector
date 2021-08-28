@@ -11,9 +11,9 @@
     <div class="col-12 col-lg-6 ">
         <div class="card" *ngIf="accountName$ | async; let accountName; else hint">
             <div class="card-header d-flex justify-content-between">
-                <span>
+                <b>
                     {{ accountName$ | async }}
-                </span>
+                </b>
                 <span>
                     <ng-container *ngIf="className$ | async; let className">
                         {{ className}}&nbsp;-&nbsp;
@@ -47,7 +47,7 @@
     </div>
     <div class="col-12 col-lg-6" *ngIf="statistics$ | async; let statistics;">
         <div class="card">
-            <div class="card-header">Statistic</div>
+            <div class="card-header"><b>Statistics</b></div>
             <div class="card-body">
                 <div class="row">
                     <div class="col">
@@ -58,11 +58,29 @@
                         </div>
                     </div>
                     <div class="col d-flex justify-content-center flex-column">
-                        <p>Distribution of top 100 players in ladder among teams.</p>
+                        <p>Distribution of <b>top 100 </b>players in ladder among teams.</p>
                         <p>
                             Druids: {{ statistics.get('Druids')}}%<br/>
                             Mercs: {{ statistics.get('Mercs')}}%<br/>
                             Knights: {{ statistics.get('Knights')}}%<br/>
+                        </p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row mt-3" *ngIf="ladderStatistics$ | async; let ladderStatistics">
+                    <div class="col">
+                        <div class="pie">
+                            <div class="pie__segment" data-label="&nbsp;Mercs" [style]="'--offset: 0; --value: ' + ladderStatistics.get('Mercs') + '; --bg: #85150f; --over50: ' + (ladderStatistics.get('Mercs') > 50 ? '1'  : '0') + ';'"></div>
+                            <div class="pie__segment" data-label="&nbsp;Druids" [style]="'--offset: ' + ladderStatistics.get('Mercs') + '; --value: ' + ladderStatistics.get('Druids') + '; --bg: #5e3d73; --over50: ' + (ladderStatistics.get('Druids') > 50 ? '1'  : '0') + ';'"></div>
+                            <div class="pie__segment" data-label="&nbsp;Knights" [style]="'--offset: ' + (+ladderStatistics.get('Mercs') + +ladderStatistics.get('Druids')) + '; --value: '+ ladderStatistics.get('Knights') +'; --bg: #9e601c; --over50: ' + (ladderStatistics.get('Knights') > 50 ? '1'  : '0') + ';'"></div>
+                        </div>
+                    </div>
+                    <div class="col d-flex justify-content-center flex-column">
+                        <p>Distribution of players in ladder among teams (<b>all ranks</b>).</p>
+                        <p>
+                            Druids: {{ ladderStatistics.get('Druids') | number:'1.1-1' }}%<br/>
+                            Mercs: {{ ladderStatistics.get('Mercs') | number:'1.1-1' }}%<br/>
+                            Knights: {{ ladderStatistics.get('Knights') | number:'1.1-1' }}%<br/>
                         </p>
                     </div>
                 </div>
@@ -78,7 +96,7 @@
 
 <ng-template #hint>
     <div class="card">
-        <div class="card-header">Nothing to see here</div>
+        <div class="card-header"><b>Nothing to see here</b></div>
         <div class="card-body">
             <p>Select an account to see relevant information.</p>
         </div>

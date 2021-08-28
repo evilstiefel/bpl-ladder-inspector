@@ -36,6 +36,8 @@ export class LadderOverviewComponent {
 
   statistics$: Observable<any> | undefined;
 
+  ladderStatistics$: Observable<any> | undefined;
+
   constructor(
     private ladderService: BPLLadderService
   ) {
@@ -86,6 +88,26 @@ export class LadderOverviewComponent {
 
     this.className$ = this.topCharacter$.pipe(
       map((character) => character?.character_class)
+    );
+
+    this.ladderStatistics$ = this.ladder$.pipe(
+      map((ladder) => {
+        const statsMap = ladder.reduce((acc, current) => {
+          if (acc.get(current.team_name)) {
+            acc.set(current.team_name, acc.get(current.team_name)! + 1);
+          } else {
+            acc.set(current.team_name, 1)
+          }
+          return acc;
+        }, new Map<TeamNames, number>());
+        return ({ statsMap, ladder });
+      }),
+      map(({statsMap, ladder }) => {
+        for (let [key, value] of statsMap) {
+          statsMap.set(key, value / ladder.length * 100)
+        }
+        return statsMap;
+      })
     );
 
     this.statistics$ = this.ladder$.pipe(
