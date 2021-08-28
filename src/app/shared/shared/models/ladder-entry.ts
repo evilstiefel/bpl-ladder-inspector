@@ -15,5 +15,7 @@ export interface LadderEntry {
     account_realm: string;
     account_challenges_total: number;
     account_twitch_name: string;
-    team_name: string;
+    team_name: TeamNames;
 }
+
+export type TeamNames = 'Druids' | 'Knights' | 'Mercs' | '';

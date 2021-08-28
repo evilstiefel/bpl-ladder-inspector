@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { combineLatest, interval, Observable } from 'rxjs';
-import { LadderEntry } from 'src/app/shared/shared/models/ladder-entry';
+import { LadderEntry, TeamNames } from 'src/app/shared/shared/models/ladder-entry';
 import { BPLLadderService } from 'src/app/shared/shared/services/bplladder.service';
 
 import { debounceTime, distinctUntilChanged, map, publishReplay, refCount, startWith, switchMap, tap } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { RankInfo } from '../../models/rank-info';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-ladder-overview',
@@ -32,6 +33,8 @@ export class LadderOverviewComponent {
 
   accountControl = new FormControl({ value: undefined, disabled: true });
 
+  statistics$: Observable<any> | undefined;
+
   constructor(
     private ladderService: BPLLadderService
   ) {
@@ -39,6 +42,7 @@ export class LadderOverviewComponent {
     this.ladder$ = interval(60000).pipe(
       startWith(0),
       switchMap(() => this.ladderService.ladder$),
+      map((ladder) => ladder.filter(entry => entry.team_name !== '')),
       publishReplay(1),
       refCount()
     );
@@ -87,6 +91,23 @@ export class LadderOverviewComponent {
     this.className$ = this.topCharacter$.pipe(
       map((character) => character?.character_class)
     );
+
+    this.statistics$ = this.ladder$.pipe(
+      map((ladder) => ladder.slice(0, 100)),
+      tap((top100) => console.log({ top100 })),
+      map((top100) => {
+        const statsMap = top100.reduce((acc, current) => {
+          if (acc.get(current.team_name)) {
+            acc.set(current.team_name, acc.get(current.team_name)! + 1);
+          } else {
+            acc.set(current.team_name, 1)
+          }
+          return acc;
+        }, new Map<TeamNames, number>());
+        return statsMap;
+      })
+    );
+
   }
 
   private calculateRanks(accountName: string, ladder: LadderEntry[]): RankInfo {

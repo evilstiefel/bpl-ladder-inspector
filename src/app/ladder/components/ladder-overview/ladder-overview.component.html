@@ -1,46 +1,72 @@
 <form class="row g-2 my-3">
     <div class="col-auto">
-        <input autocomplete="off" [typeahead]="(accountNames$ | async) || []" [formControl]="accountControl" id="accountName" type="text" class="form-control" placeholder="Accountname">
+        <input autocomplete="off" [typeahead]="(accountNames$ | async) || []" [formControl]="accountControl"
+            id="accountName" type="text" class="form-control" placeholder="Accountname">
     </div>
     <div class="col d-flex justify-content-end">
         <span>Currently {{ (playerCount$ | async) || 0 }} players in league...</span>
     </div>
 </form>
-<div class="card" *ngIf="accountName$ | async; let accountName">
-    <div class="card-header d-flex justify-content-between">
-        <span>
-            {{ accountControl.value }}
-        </span>
-        <span>
-            <ng-container *ngIf="className$ | async; let className">
-                {{ className}}&nbsp;-&nbsp;
-            </ng-container>
-            {{ teamName$ | async }}
-        </span>
+<div class="row g-3">
+    <div class="col-12 col-lg-6 ">
+        <div class="card" *ngIf="accountName$ | async; let accountName">
+            <div class="card-header d-flex justify-content-between">
+                <span>
+                    {{ accountControl.value }}
+                </span>
+                <span>
+                    <ng-container *ngIf="className$ | async; let className">
+                        {{ className}}&nbsp;-&nbsp;
+                    </ng-container>
+                    {{ teamName$ | async }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">Rank overall</span>
+                            <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.ladderRank">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">Rank in class</span>
+                            <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.classRank">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">Rank in team</span>
+                            <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.teamRank">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="input-group">
-                    <span class="input-group-text">Rank overall</span>
-                    <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.ladderRank">
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="input-group">
-                    <span class="input-group-text">Rank in class</span>
-                    <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.classRank">
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="input-group">
-                    <span class="input-group-text">Rank in team</span>
-                    <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.teamRank">
+    <div class="col-12 col-lg-6" *ngIf="statistics$ | async; let statistics;">
+        <div class="card">
+            <div class="card-header">Statistic</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="pie">
+                            <div class="pie__segment" [style]="'--offset: 0; --value: ' + statistics.get('Mercs') + '; --bg: #85150f; --over50: ' + (statistics.get('Mercs') > 50 ? '1'  : '0') + ';'"></div>
+                            <div class="pie__segment" [style]="'--offset: ' + statistics.get('Mercs') + '; --value: ' + statistics.get('Druids') + '; --bg: #5e3d73; --over50: ' + (statistics.get('Druids') > 50 ? '1'  : '0') + ';'"></div>
+                            <div class="pie__segment" [style]="'--offset: ' + (+statistics.get('Mercs') + +statistics.get('Druids')) + '; --value: '+ statistics.get('Knights') +'; --bg: #9e601c; --over50: ' + (statistics.get('Knights') > 50 ? '1'  : '0') + ';'"></div>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-center">
+                        <p>Distribution of top 100 players in ladder among teams.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="mt-3">
-    <small>The ladder is refreshed every minute, but might be slightly behind ingame data.</small>
+<div class="row mt-3">
+    <div class="col">
+        <small>The ladder is refreshed every minute, but might be slightly behind ingame data.</small>
+    </div>
 </div>
