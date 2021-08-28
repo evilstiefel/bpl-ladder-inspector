@@ -16,7 +16,7 @@
                 </b>
                 <span>
                     <ng-container *ngIf="className$ | async; let className">
-                        {{ className}}&nbsp;-&nbsp;
+                        {{ className}} -
                     </ng-container>
                     {{ teamName$ | async }}
                 </span>
@@ -24,21 +24,33 @@
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-12 col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text">Rank overall</span>
-                            <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.ladderRank">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col">Rank overall</div>
+                                    <div class="col d-flex justify-content-end"><b>{{(rankInfo$ | async)?.ladderRank}}</b></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text">Rank in class</span>
-                            <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.classRank">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col">Rank in class</div>
+                                    <div class="col d-flex justify-content-end"><b>{{(rankInfo$ | async)?.classRank}}</b></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text">Rank in team</span>
-                            <input class="form-control" readonly type="text" [value]="(rankInfo$ | async)?.teamRank">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col">Rank in team</div>
+                                    <div class="col d-flex justify-content-end"><b>{{(rankInfo$ | async)?.teamRank}}</b></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
