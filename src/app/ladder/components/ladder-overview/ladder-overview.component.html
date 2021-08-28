@@ -1,0 +1,14 @@
+<form class="row g-2 my-3">
+    <div class="col-auto">
+        <input [formControl]="accountControl" id="accountName" type="text" class="form-control" placeholder="Accountname">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+    <div class="col d-flex justify-content-end">
+        <span>Currently {{ (playerCount$ | async) || 0 }} players in league...</span>
+    </div>
+</form>
+<div class="mb-3" *ngIf="rankInfo$ | async; let rankInfo">
+    <pre>{{ rankInfo | json }}</pre>
+</div>
